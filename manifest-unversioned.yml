@@ -9,5 +9,5 @@ env:
 applications:
 - name: webtrader
   random-route: true
-  path: libs/web-${version}.jar
-  services: [ discovery-service, circuit-breaker-dashboard, config-server ]
+  path: build/libs/web-0.4.0.jar
+  services: [ discovery-service, circuit-breaker-dashboard, config-server, rabbitmq-zipkin]

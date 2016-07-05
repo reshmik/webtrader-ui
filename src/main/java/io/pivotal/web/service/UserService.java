@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -24,6 +26,7 @@ public class UserService {
 	@Autowired
 	@LoadBalanced
 	private RestTemplate restTemplate;
+
 	
 	@Value("${pivotal.accountsService.name}")
 	private String accountsService;
@@ -54,6 +57,11 @@ public class UserService {
 		
 	    ResponseEntity<?> response = restTemplate.getForEntity("http://" + accountsService + "/logout/{user}", String.class, user);
 	    logger.debug("Logout response: " + response.getStatusCode());
+	}
+	@Bean
+	@LoadBalanced
+	RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 	
 }

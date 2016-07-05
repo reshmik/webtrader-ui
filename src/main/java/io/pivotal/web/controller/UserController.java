@@ -3,6 +3,7 @@ package io.pivotal.web.controller;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,7 +28,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.ModelAndView;
-
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.SpanAccessor;
+import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
 @Controller
 public class UserController {
 	private static final Logger logger = LoggerFactory
@@ -41,8 +45,16 @@ public class UserController {
 	
 	@Autowired
 	private MarketSummaryService summaryService;
-	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+
+	@Autowired
+	private Tracer tracer;
+	@Autowired
+	private SpanAccessor accessor;
+
+    final Random random = new Random();
+    int millis = random.nextInt(1000);
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
 	public String showHome(Model model) {
 		if (!model.containsAttribute("login")) {
 			model.addAttribute("login", new AuthenticationRequest());
@@ -52,8 +64,12 @@ public class UserController {
 		//check if user is logged in!
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-		    String currentUserName = authentication.getName();
-		    logger.debug("User logged in: " + currentUserName);
+			String currentUserName = authentication.getName();
+			Span span = tracer.createSpan("http:customTraceEndpoint",
+					new AlwaysSampler());
+			tracer.addTag("random-sleep-millis", String.valueOf(millis));
+			tracer.close(span);
+			logger.debug("User logged in: " + currentUserName);
 		    
 		    try {
 		    	model.addAttribute("portfolio",marketService.getPortfolio(currentUserName));
@@ -84,6 +100,7 @@ public class UserController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String getLogin(Model model, @ModelAttribute(value="login") AuthenticationRequest login) {
 		logger.info("Logging in GET, user: " + login.getUsername());
+		tracer.addTag("random-sleep-millis", String.valueOf(millis));
 		return "index";
 	}
 	

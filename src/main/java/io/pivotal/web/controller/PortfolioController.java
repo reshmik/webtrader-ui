@@ -41,7 +41,7 @@ public class PortfolioController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 		    String currentUserName = authentication.getName();
-		    logger.debug("portfolio: User logged in: " + currentUserName);
+			logger.debug("portfolio: User logged in: " + currentUserName);
 		    
 		    //TODO: add account summary.
 		    try {
