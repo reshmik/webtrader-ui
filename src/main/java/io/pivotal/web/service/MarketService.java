@@ -142,10 +142,4 @@ public class MarketService {
 		return folio;
 	}
 
-	@Bean
-	@LoadBalanced
-	RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
-
 }

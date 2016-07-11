@@ -58,10 +58,5 @@ public class UserService {
 	    ResponseEntity<?> response = restTemplate.getForEntity("http://" + accountsService + "/logout/{user}", String.class, user);
 	    logger.debug("Logout response: " + response.getStatusCode());
 	}
-	@Bean
-	@LoadBalanced
-	RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
 	
 }

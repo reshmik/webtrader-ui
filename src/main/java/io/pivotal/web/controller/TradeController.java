@@ -1,19 +1,10 @@
 package io.pivotal.web.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
 import io.pivotal.web.domain.CompanyInfo;
 import io.pivotal.web.domain.Order;
 import io.pivotal.web.domain.Quote;
 import io.pivotal.web.domain.Search;
 import io.pivotal.web.service.MarketService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +20,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+
 @Controller
 public class TradeController {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(TradeController.class);
-	
+
 	@Autowired
 	private MarketService marketService;
 	
 	@RequestMapping(value = "/trade", method = RequestMethod.GET)
+
+
 	public String showTrade(Model model) {
 		logger.debug("/trade.GET");
 		//model.addAttribute("marketSummary", marketService.getMarketSummary());

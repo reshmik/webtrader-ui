@@ -25,34 +25,34 @@ import org.springframework.web.servlet.ModelAndView;
 public class PortfolioController {
 	private static final Logger logger = LoggerFactory
 			.getLogger(PortfolioController.class);
-	
+
 	@Autowired
 	private MarketService marketService;
-	
+
 	@Autowired
 	private MarketSummaryService summaryService;
-	
+
 	@RequestMapping(value = "/portfolio", method = RequestMethod.GET)
 	public String portfolio(Model model) {
 		logger.debug("/portfolio");
 		model.addAttribute("marketSummary", summaryService.getMarketSummary());
-		
+
 		//check if user is logged in!
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-		    String currentUserName = authentication.getName();
+			String currentUserName = authentication.getName();
 			logger.debug("portfolio: User logged in: " + currentUserName);
-		    
-		    //TODO: add account summary.
-		    try {
-		    	model.addAttribute("portfolio",marketService.getPortfolio(currentUserName));
-		    } catch (HttpServerErrorException e) {
-		    	logger.debug("error retrieving portfolfio: " + e.getMessage());
-		    	model.addAttribute("portfolioRetrievalError",e.getMessage());
-		    }
-		    model.addAttribute("order", new Order());
+
+			//TODO: add account summary.
+			try {
+				model.addAttribute("portfolio",marketService.getPortfolio(currentUserName));
+			} catch (HttpServerErrorException e) {
+				logger.debug("error retrieving portfolfio: " + e.getMessage());
+				model.addAttribute("portfolioRetrievalError",e.getMessage());
+			}
+			model.addAttribute("order", new Order());
 		}
-		
+
 		return "portfolio";
 	}
 
